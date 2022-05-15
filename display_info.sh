@@ -7,7 +7,7 @@
 # Can be used as a library by sourcing it from another script
 # and accessing hashmap DISPLAY_INFO
 #
-# https://github.com/lu0/display-info
+# https://github.com/lu0/current-x-display-info
 #
 
 declare -A DISPLAY_INFO=;                declare -a INFO_SORTING=
