@@ -8,7 +8,7 @@ sourcing it.
   - [Dependencies](#dependencies)
   - [Usage](#usage)
     - [As a module in another script](#as-a-module-in-another-script)
-    - [Standalone](#standalone)
+    - [As a command](#as-a-command)
 
 ## Dependencies
 
@@ -66,12 +66,18 @@ $ ./example.sh
 ![example output](assets/example_script_output.png)
 
 
-### Standalone
+### As a command
 
-Run the script. A list of ordered values will be shown, here I add comments explaining each of those:
+Link the script to your `PATH` as `display_info`
+
+```sh
+ln -srf display_info.sh ~/.local/bin/display_info
+```
+
+Run the new command `display_info`. A list of ordered values will be shown, here I add comments explaining each of those:
 
 ```bash
-$ ./display_info.sh
+$ display_info
 
 DISPLAY_INFO (values only):
 
@@ -87,7 +93,7 @@ HDMI-1       # Name of the current display
 *Note*: Message "`DISPLAY_INFO (values only):`" is only for debugging purposes, it won't pollute the output if you intend to use it as it is. You can can actually do:
 
 ```bash
-$ info=$(./display_info.sh)
+$ info=$(display_info)
 $ name=$(echo $info | cut -d' ' -f1)
 $ height=$(echo $info | cut -d' ' -f6)
 $ echo "name: ${name}, height: ${height}"
