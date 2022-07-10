@@ -30,7 +30,7 @@ Minimal example:
 #!/usr/bin/env bash
 # example_script.sh
 
-# Load the functions of from the script
+# Load functions from the script
 source display_info.sh
 
 # This loads hashmap DISPLAY_INFO
