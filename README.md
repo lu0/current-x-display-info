@@ -22,7 +22,7 @@ default in most distributions using X:
 
 ## Usage
 
-### As a module in another script
+### As a lightweight module in another Bash script
 
 Minimal example:
 
@@ -81,7 +81,6 @@ Get information of the current display on systems using X.
 
 USAGE:
    display_info   [OPTIONS]
-   display_info   # Porcelain (line-parseable output)
 
 OPTIONS:
    -h | --help        Show this manual.
@@ -93,15 +92,4 @@ OPTIONS:
         --height      Height (resolution along the Y axis).
         --window      ID of the active window (decimal).
         --all         All previous properties.
-```
-
-*Note*: Message "`DISPLAY_INFO (porcelain):`" received when no options are passed is only for debugging purposes, it won't pollute the output if you intend to use it as it is. You can can actually do:
-
-```bash
-$ info=$(display_info)
-$ name=$(echo $info | cut -d' ' -f1)
-$ height=$(echo $info | cut -d' ' -f6)
-$ echo "name: ${name}, height: ${height}"
-
-name: HDMI-1, height: 1440
 ```

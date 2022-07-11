@@ -11,22 +11,16 @@
 # https://github.com/lu0/current-x-display-info
 #
 
-declare -A DISPLAY_INFO=;                declare -a INFO_SORTING=
-DISPLAY_INFO["monitor_name"]="";        INFO_SORTING=("monitor_name")
-DISPLAY_INFO["resolution"]="";          INFO_SORTING+=("resolution")
-DISPLAY_INFO["x"]="";                   INFO_SORTING+=("x")
-DISPLAY_INFO["y"]="";                   INFO_SORTING+=("y")
-DISPLAY_INFO["width"]="";               INFO_SORTING+=("width")
-DISPLAY_INFO["height"]="";              INFO_SORTING+=("height")
-DISPLAY_INFO["window_id"]="";           INFO_SORTING+=("window_id")
+declare -A DISPLAY_INFO=(
+    ["monitor_name"]=""
+    ["resolution"]=""
+    ["x"]=""
+    ["y"]=""
+    ["width"]=""
+    ["height"]=""
+    ["window_id"]=""
+)
 
-# Shows hashmap DISPLAY_INFO in the order specified by array INFO_SORTING
-display_info::_print_porcelain() {
-    echo >&2 -e "DISPLAY_INFO (porcelain):\n"
-    for i in "${INFO_SORTING[@]}"; do
-        echo "${DISPLAY_INFO[${i}]}"
-    done
-}
 
 # Fills hashmap DISPLAY_INFO
 display_info::load() {
@@ -83,11 +77,6 @@ display_info::load() {
 
 display_info::_show_property() {
 
-    case $# in
-        0) display_info::_print_porcelain; return ;;
-        *) ;;
-    esac
-
     while getopts h-: OPT; do
         case "$OPT$OPTARG" in
             h | -help)      display_info::_show_usage ;;
@@ -123,7 +112,6 @@ display_info::_show_usage() {
         echo -e "\nGet information of the current display on systems using X."
         echo -e "\nUSAGE:"
         echo -e "   display_info   [OPTIONS]"
-        echo -e "   display_info   # Porcelain (line-parseable output)"
         echo -e "\nOPTIONS:"
         echo -e "   -h | --help        Show this manual."
         echo -e "        --name        Name of the current display."
