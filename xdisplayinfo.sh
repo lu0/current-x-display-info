@@ -104,7 +104,6 @@ xdisplayinfo::_show_property() {
         return
     done
 
-    echo >&2 "illegal argument: $*"
     xdisplayinfo::_show_usage
 }
 
