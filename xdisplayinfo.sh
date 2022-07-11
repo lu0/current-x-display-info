@@ -4,26 +4,26 @@
 # This script gets information of the current display,
 # where "current display" is the display the mouse is hovered over.
 #
-# Can be used as a library by sourcing it from another script
-# and accessing hashmap DISPLAY_INFO after running `xdisplayinfo::load`
-# or as a command after adding it to your $PATH.
+# Can be used as Bash library by sourcing it from another script
+# and accessing its properties by using `xdisplayinfo::<property name>`,
+# or as a command (after adding it to your $PATH).
 #
 # https://github.com/lu0/current-x-display-info
 #
 
-declare -A DISPLAY_INFO=(
-    ["monitor_name"]=""
+declare -A _PROPERTIES=(
+    ["name"]=""
     ["resolution"]=""
-    ["x"]=""
-    ["y"]=""
+    ["offset-x"]=""
+    ["offset-y"]=""
     ["width"]=""
     ["height"]=""
-    ["window_id"]=""
+    ["window-id"]=""
 )
 
 
-# Fills hashmap DISPLAY_INFO
-xdisplayinfo::load() {
+# Fills hashmap _PROPERTIES
+xdisplayinfo::__reload() {
     # Regex to match all contiguous numbers
     nums_re="[0-9]+"
 
@@ -36,7 +36,7 @@ xdisplayinfo::load() {
 
     # Evaluates to variables X, Y, SCREEN, WINDOW
     eval "$(xdotool getmouselocation --shell)"
-    DISPLAY_INFO[window_id]="${WINDOW}"
+    _PROPERTIES[window-id]="${WINDOW}"
 
     # `xrandr --current` is faster than plain `xrandr` since
     # it doesn't re-evaluate for hardware changes
@@ -61,13 +61,13 @@ xdisplayinfo::load() {
         if [ "${X}" -ge "${off_x}" ] && [ "${X}" -lt "$(( off_x + res_x ))" ] && \
            [ "${Y}" -ge "${off_y}" ] && [ "${Y}" -lt "$(( off_y + res_y ))" ];
         then
-            DISPLAY_INFO[monitor_name]="${monitor_names_array[monitor_index]}"
-            DISPLAY_INFO[resolution]="${res_x}x${res_y}"
+            _PROPERTIES[name]="${monitor_names_array[monitor_index]}"
+            _PROPERTIES[resolution]="${res_x}x${res_y}"
 
-            DISPLAY_INFO[width]="${res_x}"
-            DISPLAY_INFO[height]="${res_y}"
-            DISPLAY_INFO[x]="${off_x}"
-            DISPLAY_INFO[y]="${off_y}"
+            _PROPERTIES[width]="${res_x}"
+            _PROPERTIES[height]="${res_y}"
+            _PROPERTIES[offset-x]="${off_x}"
+            _PROPERTIES[offset-y]="${off_y}"
             break
         fi
 
@@ -75,36 +75,66 @@ xdisplayinfo::load() {
     done
 }
 
-xdisplayinfo::_show_property() {
+xdisplayinfo::name() {
+    xdisplayinfo::__reload
+    echo "${_PROPERTIES[name]}"
+}
+
+xdisplayinfo::resolution() {
+    xdisplayinfo::__reload
+    echo "${_PROPERTIES[resolution]}"
+}
+
+xdisplayinfo::offset-x() {
+    xdisplayinfo::__reload
+    echo "${_PROPERTIES[offset-x]}"
+}
+
+xdisplayinfo::offset-y() {
+    xdisplayinfo::__reload
+    echo "${_PROPERTIES[offset-y]}"
+}
+
+xdisplayinfo::width() {
+    xdisplayinfo::__reload
+    echo "${_PROPERTIES[width]}"
+}
+
+xdisplayinfo::height() {
+    xdisplayinfo::__reload
+    echo "${_PROPERTIES[height]}"
+}
+
+xdisplayinfo::window-id() {
+    xdisplayinfo::__reload
+    echo "${_PROPERTIES[window-id]}"
+}
+
+xdisplayinfo::__parse_cli_options() {
 
     while getopts h-: OPT; do
-        case "$OPT$OPTARG" in
-            h | -help)      xdisplayinfo::_show_usage ;;
-            -name)          echo "${DISPLAY_INFO[monitor_name]}" ;;
-            -resolution)    echo "${DISPLAY_INFO[resolution]}" ;;
-            -offset-x)      echo "${DISPLAY_INFO[x]}" ;;
-            -offset-y)      echo "${DISPLAY_INFO[y]}" ;;
-            -width)         echo "${DISPLAY_INFO[width]}" ;;
-            -height)        echo "${DISPLAY_INFO[height]}" ;;
-            -window)     echo "${DISPLAY_INFO[window_id]}" ;;
+        readonly long_option="$OPT$OPTARG"
+        case $long_option in
             -all)
-                echo -e "name:\t\t ${DISPLAY_INFO[monitor_name]}"
-                echo -e "resolution:\t ${DISPLAY_INFO[resolution]}"
-                echo -e "width:\t\t ${DISPLAY_INFO[width]}"
-                echo -e "height:\t\t ${DISPLAY_INFO[height]}"
-                echo -e "offset-x:\t ${DISPLAY_INFO[x]}"
-                echo -e "offset-y:\t ${DISPLAY_INFO[y]}"
-                echo -e "window-id:\t ${DISPLAY_INFO[window_id]}"
+                xdisplayinfo::__reload
+                echo -e "name:\t\t ${_PROPERTIES[name]}"
+                echo -e "resolution:\t ${_PROPERTIES[resolution]}"
+                echo -e "width:\t\t ${_PROPERTIES[width]}"
+                echo -e "height:\t\t ${_PROPERTIES[height]}"
+                echo -e "offset-x:\t ${_PROPERTIES[offset-x]}"
+                echo -e "offset-y:\t ${_PROPERTIES[offset-y]}"
+                echo -e "window-id:\t ${_PROPERTIES[window-id]}"
+                exit 0
                 ;;
-            ??* | ?*)
-                echo >&2 "illegal option: ${OPTARG}"
-                xdisplayinfo::_show_usage
-                exit 1 ;;
+            *)
+                property_name="${long_option##-}"
+                xdisplayinfo::"$property_name" 2>/dev/null && exit 0
+                xdisplayinfo::_show_usage && exit 1
+                ;;
         esac
-        return
     done
 
-    xdisplayinfo::_show_usage
+    xdisplayinfo::_show_usage && exit 1
 }
 
 xdisplayinfo::_show_usage() {
@@ -112,18 +142,16 @@ xdisplayinfo::_show_usage() {
         echo -e "\nUSAGE:"
         echo -e "   xdisplayinfo   [OPTIONS]"
         echo -e "\nOPTIONS:"
-        echo -e "   -h | --help        Show this manual."
-        echo -e "        --name        Name of the current display."
-        echo -e "        --resolution  Resolution."
-        echo -e "        --offset-x    X coordinate of the top-left corner."
-        echo -e "        --offset-y    Y coordinate of the top-left corner."
-        echo -e "        --width       Width (resolution along the X axis)."
-        echo -e "        --height      Height (resolution along the Y axis)."
-        echo -e "        --window      ID of the active window (decimal)."
-        echo -e "        --all         All previous properties.\n"
+        echo -e "   --name        Name of the current display."
+        echo -e "   --resolution  Resolution."
+        echo -e "   --offset-x    X coordinate of the top-left corner."
+        echo -e "   --offset-y    Y coordinate of the top-left corner."
+        echo -e "   --width       Width (resolution along the X axis)."
+        echo -e "   --height      Height (resolution along the Y axis)."
+        echo -e "   --window-id   ID of the active window (decimal)."
+        echo -e "   --all         All previous properties.\n"
 }
 
 if [[ "${#BASH_SOURCE[@]}" -eq 1 ]]; then
-    xdisplayinfo::load
-    xdisplayinfo::_show_property "$@"
+    xdisplayinfo::__parse_cli_options "$@"
 fi

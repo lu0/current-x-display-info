@@ -24,7 +24,7 @@ default in most distributions using X:
 
 ### As a lightweight module in another Bash script
 
-Minimal example:
+Load the `xdisplayinfo` script in the target script, i.e:
 
 ```bash
 #!/usr/bin/env bash
@@ -32,14 +32,14 @@ Minimal example:
 
 # Load functions from the script
 source xdisplayinfo.sh
+```
 
-# This loads hashmap DISPLAY_INFO
-xdisplayinfo::load
+Retrieve properties of the display by using `xdisplayinfo::<property name>`, i.e:
 
-# Use the hashmap
+```bash
 echo ""
 echo "    ↓"
-echo "    y     ${DISPLAY_INFO[monitor_name]}"
+echo "    y     $(xdisplayinfo::name)"
 echo "→ x ┌─────────────────────────────────────┐"
 echo "    │             width                   │"
 echo "    │                      ┌───────────┐  │"
@@ -48,19 +48,20 @@ echo "    │ height               │ window_id │  │"
 echo "    │                      │           │  │"
 echo "    │                      └───────────┘  │"
 echo "    └─────────────────────────────────────┘"
-echo "      Resolution: ${DISPLAY_INFO[resolution]}"
+echo "      Resolution: $(xdisplayinfo::resolution)"
 echo ""
 
-echo -e "width:\t\t ${DISPLAY_INFO[width]}"
-echo -e "height:\t\t ${DISPLAY_INFO[height]}"
-echo -e "x:\t\t ${DISPLAY_INFO[x]}"
-echo -e "y:\t\t ${DISPLAY_INFO[y]}"
-echo -e "window_id:\t ${DISPLAY_INFO[window_id]}"
+echo -e "width:\t\t $(xdisplayinfo::width)"
+echo -e "height:\t\t $(xdisplayinfo::height)"
+echo -e "x:\t\t $(xdisplayinfo::offset-x)"
+echo -e "y:\t\t $(xdisplayinfo::offset-y)"
+echo -e "window_id:\t $(xdisplayinfo::window-id)"
 
 ```
 
+Run the provided example:
 ```bash
-$ ./example.sh
+$ ./example_script.sh
 ```
 
 ![example output](assets/example_script_output.png)
@@ -68,13 +69,13 @@ $ ./example.sh
 
 ### As a command
 
-Link the script to your `PATH` as `xdisplayinfo`
+Link the script to your `PATH` as `xdisplayinfo`:
 
 ```sh
 ln -srf xdisplayinfo.sh ~/.local/bin/xdisplayinfo
 ```
 
-Run `xdisplayinfo -h` to see the list of available options.
+Run `xdisplayinfo --help` to see the list of available options.
 
 ```txt
 Get information of the current display on systems using X.
@@ -83,13 +84,12 @@ USAGE:
    xdisplayinfo   [OPTIONS]
 
 OPTIONS:
-   -h | --help        Show this manual.
-        --name        Name of the current display.
-        --resolution  Resolution.
-        --offset-x    X coordinate of the top-left corner.
-        --offset-y    Y coordinate of the top-left corner.
-        --width       Width (resolution along the X axis).
-        --height      Height (resolution along the Y axis).
-        --window      ID of the active window (decimal).
-        --all         All previous properties.
+   --name        Name of the current display.
+   --resolution  Resolution.
+   --offset-x    X coordinate of the top-left corner.
+   --offset-y    Y coordinate of the top-left corner.
+   --width       Width (resolution along the X axis).
+   --height      Height (resolution along the Y axis).
+   --window-id   ID of the active window (decimal).
+   --all         All previous properties.
 ```

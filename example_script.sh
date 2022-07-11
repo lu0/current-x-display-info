@@ -4,13 +4,11 @@
 # Load functions from the script
 source xdisplayinfo.sh
 
-# This loads hashmap DISPLAY_INFO
-xdisplayinfo::load
-
-# Use the hashmap
+# Retrieve and show properties of the display
+# using `xdisplayinfo::<property name>`
 echo ""
 echo "    ↓"
-echo "    y     ${DISPLAY_INFO[monitor_name]}"
+echo "    y     $(xdisplayinfo::name)"
 echo "→ x ┌─────────────────────────────────────┐"
 echo "    │             width                   │"
 echo "    │                      ┌───────────┐  │"
@@ -19,11 +17,11 @@ echo "    │ height               │ window_id │  │"
 echo "    │                      │           │  │"
 echo "    │                      └───────────┘  │"
 echo "    └─────────────────────────────────────┘"
-echo "      Resolution: ${DISPLAY_INFO[resolution]}"
+echo "      Resolution: $(xdisplayinfo::resolution)"
 echo ""
 
-echo -e "width:\t\t ${DISPLAY_INFO[width]}"
-echo -e "height:\t\t ${DISPLAY_INFO[height]}"
-echo -e "x:\t\t ${DISPLAY_INFO[x]}"
-echo -e "y:\t\t ${DISPLAY_INFO[y]}"
-echo -e "window_id:\t ${DISPLAY_INFO[window_id]}"
+echo -e "width:\t\t $(xdisplayinfo::width)"
+echo -e "height:\t\t $(xdisplayinfo::height)"
+echo -e "x:\t\t $(xdisplayinfo::offset-x)"
+echo -e "y:\t\t $(xdisplayinfo::offset-y)"
+echo -e "window_id:\t $(xdisplayinfo::window-id)"
