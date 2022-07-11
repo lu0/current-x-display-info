@@ -5,7 +5,7 @@
 # where "current display" is the display the mouse is hovered over.
 #
 # Can be used as a library by sourcing it from another script
-# and accessing hashmap DISPLAY_INFO after running `display_info::load`
+# and accessing hashmap DISPLAY_INFO after running `xdisplayinfo::load`
 # or as a command after adding it to your $PATH.
 #
 # https://github.com/lu0/current-x-display-info
@@ -23,7 +23,7 @@ declare -A DISPLAY_INFO=(
 
 
 # Fills hashmap DISPLAY_INFO
-display_info::load() {
+xdisplayinfo::load() {
     # Regex to match all contiguous numbers
     nums_re="[0-9]+"
 
@@ -75,11 +75,11 @@ display_info::load() {
     done
 }
 
-display_info::_show_property() {
+xdisplayinfo::_show_property() {
 
     while getopts h-: OPT; do
         case "$OPT$OPTARG" in
-            h | -help)      display_info::_show_usage ;;
+            h | -help)      xdisplayinfo::_show_usage ;;
             -name)          echo "${DISPLAY_INFO[monitor_name]}" ;;
             -resolution)    echo "${DISPLAY_INFO[resolution]}" ;;
             -offset-x)      echo "${DISPLAY_INFO[x]}" ;;
@@ -98,20 +98,20 @@ display_info::_show_property() {
                 ;;
             ??* | ?*)
                 echo >&2 "illegal option: ${OPTARG}"
-                display_info::_show_usage
+                xdisplayinfo::_show_usage
                 exit 1 ;;
         esac
         return
     done
 
     echo >&2 "illegal argument: $*"
-    display_info::_show_usage
+    xdisplayinfo::_show_usage
 }
 
-display_info::_show_usage() {
+xdisplayinfo::_show_usage() {
         echo -e "\nGet information of the current display on systems using X."
         echo -e "\nUSAGE:"
-        echo -e "   display_info   [OPTIONS]"
+        echo -e "   xdisplayinfo   [OPTIONS]"
         echo -e "\nOPTIONS:"
         echo -e "   -h | --help        Show this manual."
         echo -e "        --name        Name of the current display."
@@ -125,6 +125,6 @@ display_info::_show_usage() {
 }
 
 if [[ "${#BASH_SOURCE[@]}" -eq 1 ]]; then
-    display_info::load
-    display_info::_show_property "$@"
+    xdisplayinfo::load
+    xdisplayinfo::_show_property "$@"
 fi

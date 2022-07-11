@@ -2,10 +2,10 @@
 # example_script.sh
 
 # Load functions from the script
-source display_info.sh
+source xdisplayinfo.sh
 
 # This loads hashmap DISPLAY_INFO
-display_info::load
+xdisplayinfo::load
 
 # Use the hashmap
 echo ""

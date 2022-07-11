@@ -31,10 +31,10 @@ Minimal example:
 # example_script.sh
 
 # Load functions from the script
-source display_info.sh
+source xdisplayinfo.sh
 
 # This loads hashmap DISPLAY_INFO
-display_info::load
+xdisplayinfo::load
 
 # Use the hashmap
 echo ""
@@ -68,19 +68,19 @@ $ ./example.sh
 
 ### As a command
 
-Link the script to your `PATH` as `display_info`
+Link the script to your `PATH` as `xdisplayinfo`
 
 ```sh
-ln -srf display_info.sh ~/.local/bin/display_info
+ln -srf xdisplayinfo.sh ~/.local/bin/xdisplayinfo
 ```
 
-Run `display_info -h` to see the list of available options.
+Run `xdisplayinfo -h` to see the list of available options.
 
 ```txt
 Get information of the current display on systems using X.
 
 USAGE:
-   display_info   [OPTIONS]
+   xdisplayinfo   [OPTIONS]
 
 OPTIONS:
    -h | --help        Show this manual.
