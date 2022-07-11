@@ -8,11 +8,10 @@ mouse is hovered over, in systems using X server.
 Tested with the following dependencies, installed by default in most Linux
 distributions using X:
 
-- `bash`: `5`
+- `bash`: `4`+
 - `xdotool`: `3.20160805`+
 - `xrandr`: `1.5.0`+
 - `grep`: `3.4`+
-- `python`: `3.7`+
 
 ## Installation
 
