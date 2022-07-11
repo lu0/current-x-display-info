@@ -1,14 +1,11 @@
 #!/usr/bin/env bash
-# example_script.sh
-
-# Load functions from the script
-source xdisplayinfo.sh
+# example_usage.sh
 
 # Retrieve and show properties of the display
-# using `xdisplayinfo::<property name>`
+# using `xdisplayinfo --<property name>`
 echo ""
 echo "    ↓"
-echo "    y     $(xdisplayinfo::name)"
+echo "    y     $(xdisplayinfo --name)"
 echo "→ x ┌─────────────────────────────────────┐"
 echo "    │             width                   │"
 echo "    │                      ┌───────────┐  │"
@@ -17,11 +14,11 @@ echo "    │ height               │ window_id │  │"
 echo "    │                      │           │  │"
 echo "    │                      └───────────┘  │"
 echo "    └─────────────────────────────────────┘"
-echo "      Resolution: $(xdisplayinfo::resolution)"
+echo "      Resolution: $(xdisplayinfo --resolution)"
 echo ""
 
-echo -e "width:\t\t $(xdisplayinfo::width)"
-echo -e "height:\t\t $(xdisplayinfo::height)"
-echo -e "x:\t\t $(xdisplayinfo::offset-x)"
-echo -e "y:\t\t $(xdisplayinfo::offset-y)"
-echo -e "window_id:\t $(xdisplayinfo::window-id)"
+echo -e "width:\t\t $(xdisplayinfo --width)"
+echo -e "height:\t\t $(xdisplayinfo --height)"
+echo -e "x:\t\t $(xdisplayinfo --offset-x)"
+echo -e "y:\t\t $(xdisplayinfo --offset-y)"
+echo -e "window_id:\t $(xdisplayinfo --window-id)"
