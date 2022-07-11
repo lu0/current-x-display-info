@@ -2,10 +2,11 @@
 
 #
 # This script gets information of the current display,
-# the one the mouse is over.
+# where "current display" is the display the mouse is hovered over.
 #
 # Can be used as a library by sourcing it from another script
-# and accessing hashmap DISPLAY_INFO
+# and accessing hashmap DISPLAY_INFO after running `display_info::load`
+# or as a command after adding it to your $PATH.
 #
 # https://github.com/lu0/current-x-display-info
 #
@@ -20,8 +21,8 @@ DISPLAY_INFO["height"]="";              INFO_SORTING+=("height")
 DISPLAY_INFO["window_id"]="";           INFO_SORTING+=("window_id")
 
 # Shows hashmap DISPLAY_INFO in the order specified by array INFO_SORTING
-display_info::show() {
-    echo >&2 -e "DISPLAY_INFO (values only):\n"
+display_info::_print_porcelain() {
+    echo >&2 -e "DISPLAY_INFO (porcelain):\n"
     for i in "${INFO_SORTING[@]}"; do
         echo "${DISPLAY_INFO[${i}]}"
     done
@@ -80,8 +81,62 @@ display_info::load() {
     done
 }
 
+display_info::_show_property() {
+
+    case $# in
+        0) display_info::_print_porcelain; return ;;
+        *) ;;
+    esac
+
+    while getopts h-: OPT; do
+        case "$OPT$OPTARG" in
+            h | -help)      display_info::_show_usage ;;
+            -name)          echo "${DISPLAY_INFO[monitor_name]}" ;;
+            -resolution)    echo "${DISPLAY_INFO[resolution]}" ;;
+            -offset-x)      echo "${DISPLAY_INFO[x]}" ;;
+            -offset-y)      echo "${DISPLAY_INFO[y]}" ;;
+            -width)         echo "${DISPLAY_INFO[width]}" ;;
+            -height)        echo "${DISPLAY_INFO[height]}" ;;
+            -window)     echo "${DISPLAY_INFO[window_id]}" ;;
+            -all)
+                echo -e "name:\t\t ${DISPLAY_INFO[monitor_name]}"
+                echo -e "resolution:\t ${DISPLAY_INFO[resolution]}"
+                echo -e "width:\t\t ${DISPLAY_INFO[width]}"
+                echo -e "height:\t\t ${DISPLAY_INFO[height]}"
+                echo -e "offset-x:\t ${DISPLAY_INFO[x]}"
+                echo -e "offset-y:\t ${DISPLAY_INFO[y]}"
+                echo -e "window-id:\t ${DISPLAY_INFO[window_id]}"
+                ;;
+            ??* | ?*)
+                echo >&2 "illegal option: ${OPTARG}"
+                display_info::_show_usage
+                exit 1 ;;
+        esac
+        return
+    done
+
+    echo >&2 "illegal argument: $*"
+    display_info::_show_usage
+}
+
+display_info::_show_usage() {
+        echo -e "\nGet information of the current display on systems using X."
+        echo -e "\nUSAGE:"
+        echo -e "   display_info   [OPTIONS]"
+        echo -e "   display_info   # Porcelain (line-parseable output)"
+        echo -e "\nOPTIONS:"
+        echo -e "   -h | --help        Show this manual."
+        echo -e "        --name        Name of the current display."
+        echo -e "        --resolution  Resolution."
+        echo -e "        --offset-x    X coordinate of the top-left corner."
+        echo -e "        --offset-y    Y coordinate of the top-left corner."
+        echo -e "        --width       Width (resolution along the X axis)."
+        echo -e "        --height      Height (resolution along the Y axis)."
+        echo -e "        --window      ID of the active window (decimal)."
+        echo -e "        --all         All previous properties.\n"
+}
 
 if [[ "${#BASH_SOURCE[@]}" -eq 1 ]]; then
     display_info::load
-    display_info::show
+    display_info::_show_property "$@"
 fi

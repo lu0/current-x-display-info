@@ -74,23 +74,28 @@ Link the script to your `PATH` as `display_info`
 ln -srf display_info.sh ~/.local/bin/display_info
 ```
 
-Run the new command `display_info`. A list of ordered values will be shown, here I add comments explaining each of those:
+Run `display_info -h` to see the list of available options.
 
-```bash
-$ display_info
+```txt
+Get information of the current display on systems using X.
 
-DISPLAY_INFO (values only):
+USAGE:
+   display_info   [OPTIONS]
+   display_info   # Porcelain (line-parseable output)
 
-HDMI-1       # Name of the current display
-2560x1440    # Resolution of the current display
-1920         # X coordinate from where the current display begins
-0            # Y coordinate from where the current display begins
-2560         # Width (resolution along the X axis) of the current display
-1440         # Height (resolution along the Y axis) of the current display
-119537707    # ID of the active window, decimal.
+OPTIONS:
+   -h | --help        Show this manual.
+        --name        Name of the current display.
+        --resolution  Resolution.
+        --offset-x    X coordinate of the top-left corner.
+        --offset-y    Y coordinate of the top-left corner.
+        --width       Width (resolution along the X axis).
+        --height      Height (resolution along the Y axis).
+        --window      ID of the active window (decimal).
+        --all         All previous properties.
 ```
 
-*Note*: Message "`DISPLAY_INFO (values only):`" is only for debugging purposes, it won't pollute the output if you intend to use it as it is. You can can actually do:
+*Note*: Message "`DISPLAY_INFO (porcelain):`" received when no options are passed is only for debugging purposes, it won't pollute the output if you intend to use it as it is. You can can actually do:
 
 ```bash
 $ info=$(display_info)
