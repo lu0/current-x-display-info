@@ -21,7 +21,7 @@ setup(
     long_description=readme,
     author=package_info["__author__"],
     author_email=package_info["__author_email__"],
-    url=package_info["__url__"],
+    url=package_info["__source_url__"],
     long_description_content_type="text/markdown",
     packages=["xdisplayinfo"],
     package_dir={"xdisplayinfo": "src"},
@@ -31,7 +31,9 @@ setup(
     install_requires=install_requires,
     scripts=["src/scripts/xdisplayinfo"],
     project_urls={
-        "Source": package_info["__url__"],
+        "Source": package_info["__source_url__"],
+        "Documentation": package_info["__docs_url__"],
+        "Tracker": package_info["__issues_url__"],
     },
     classifiers=[
         "Development Status :: 3 - Alpha",
