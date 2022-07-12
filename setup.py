@@ -25,7 +25,7 @@ setup(
     long_description_content_type="text/markdown",
     packages=["xdisplayinfo"],
     package_dir={"xdisplayinfo": "src"},
-    package_data={"": ["LICENSE"]},
+    license_files = ("LICENSE",),
     include_package_data=True,
     python_requires=">=3.7, <4",
     install_requires=install_requires,
