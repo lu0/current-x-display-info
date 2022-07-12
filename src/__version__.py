@@ -5,7 +5,6 @@
 # /_/|_/_____/_/____/ .___/_/\__,_/\__, /___/_/ /_/_/  \____/
 #                  /_/            /____/
 
-__package_name__ = "xdisplayinfo"
 __description__ = "Utility to get information of the current display in systems using X."
 __version__ = "1.0.2"
 __author__ = "Lucero Alvarado Ruiz"

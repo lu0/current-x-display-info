@@ -15,7 +15,7 @@ with open("README.md") as f:
     readme = f.read()
 
 setup(
-    name=package_info["__package_name__"],
+    name="xdisplayinfo",
     version=package_info["__version__"],
     description=package_info["__description__"],
     long_description=readme,
