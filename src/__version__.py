@@ -6,7 +6,7 @@
 #                  /_/            /____/
 
 __description__ = "Utility to get information of the current display in systems using X."
-__version__ = "1.0.3"
+__version__ = "2.0.0"
 __author__ = "Lucero Alvarado Ruiz"
 __author_email__ = "me@lucerocodes.com"
 __source_url__ = "https://github.com/lu0/current-x-display-info"
