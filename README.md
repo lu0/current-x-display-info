@@ -32,21 +32,21 @@ ln -srf xdisplayinfo ~/.local/bin/xdisplayinfo
 
 ## Usage
 
-Run `xdisplayinfo --help` to see the list of available options.
+Run `xdisplayinfo -h` to see the list of available options.
 
 ```txt
 Get information of the current display on systems using X.
 
 USAGE:
-   xdisplayinfo   [OPTIONS]
+  xdisplayinfo   [OPTION]
 
 OPTIONS:
-   --name        Name of the current display.
-   --resolution  Resolution.
-   --offset-x    X coordinate of the top-left corner.
-   --offset-y    Y coordinate of the top-left corner.
-   --width       Width (resolution along the X axis).
-   --height      Height (resolution along the Y axis).
-   --window-id   ID of the active window (decimal).
-   --all         All previous properties.
+  --window-id    ID of the active window (decimal).
+  --offset-y     Y coordinate of the top-left corner.
+  --offset-x     X coordinate of the top-left corner.
+  --resolution   Resolution as [width]x[height].
+  --height       Resolution along the Y axis.
+  --width        Resolution along the X axis.
+  --name         Name of the current display.
+  --all          All properties.
 ```
