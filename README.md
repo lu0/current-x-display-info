@@ -15,12 +15,20 @@ distributions using X:
 
 ## Installation
 
-Using PyPI:
+### Option A: Using `pip`
 
 ```sh
-sudo apt-get install python3-pip
-python3 -m pip install xdisplayinfo
+pip3 install xdisplayinfo
 ```
+
+### Option B: Adding source script to `$PATH`
+
+```sh
+git clone https://github.com/lu0/current-x-display-info
+cd current-x-display-info/src/scripts/
+ln -srf xdisplayinfo ~/.local/bin/xdisplayinfo
+```
+
 
 ## Usage
 
