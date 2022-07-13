@@ -24,50 +24,51 @@ declare -A _PROPERTIES=(
 
 # Fills hashmap _PROPERTIES
 xdisplayinfo::__reload() {
-    # Regex to match all contiguous numbers
-    readonly nums_re="[0-9]+"
+    # Regexps to match contiguous numbers and
+    # patterns [width]x[height]+[offset-x]+[offset-y]
+    local -r nums_re="[0-9]+"
+    local -r dims_re="${nums_re}x${nums_re}\+${nums_re}\+${nums_re}"
 
-    # Regex to match lines [xres]x[yres]+[xoffset]+[yoffset]
-    readonly dimensions_re="^${nums_re}x${nums_re}\+${nums_re}\+${nums_re}$"
+    # `xrandr --current` is faster than plain `xrandr`,
+    # since it doesn't re-evaluate for hardware changes
+    local connected_info; connected_info=$(xrandr --current |grep -w connected)
 
-    # Evaluates to variables X, Y, SCREEN, WINDOW
-    eval "$(xdotool getmouselocation --shell)"
-    _PROPERTIES[window-id]="${WINDOW}"
+    local display_names
+    readarray -t display_names < <(echo "$connected_info" | cut -d" " -f1)
 
-    # `xrandr --current` is faster than plain `xrandr` since
-    # it doesn't re-evaluate for hardware changes
-    connected_displays=$(xrandr --current | grep -w connected)
+    local dimensions
+    readarray -t dimensions < <(echo "$connected_info" | grep -Po "$dims_re")
 
-    # shellcheck disable=2207 # Command unquoted to enable array splitting
-    monitor_names_array=( $(echo "${connected_displays}" | cut -d' ' -f1) )
 
-    props_split_as_lines="$(echo "${connected_displays}" | tr -s ' ' '\n')"
-    dimension_rows=$(echo -e "${props_split_as_lines}" | grep -Po "${dimensions_re}")
+    local display_index
+    for display_index in "${!display_names[@]}"; do
 
-    monitor_index=0
-    for dim in ${dimension_rows}; do
-        # shellcheck disable=2207 # Command unquoted to enable splitting
-        dimension_cols_array=( $(echo "${dim}" | grep -Po "${nums_re}") )
+        local parsed_dimension_properties
+        readarray -t parsed_dimension_properties < \
+            <(echo "${dimensions[$display_index]}" | grep -Po "$nums_re")
 
-        res_x="${dimension_cols_array[0]}"
-        res_y="${dimension_cols_array[1]}"
-        off_x="${dimension_cols_array[2]}"
-        off_y="${dimension_cols_array[3]}"
+        local width="${parsed_dimension_properties[0]}"
+        local height="${parsed_dimension_properties[1]}"
+        local x_left="${parsed_dimension_properties[2]}"
+        local y_top="${parsed_dimension_properties[3]}"
 
-        if [ "${X}" -ge "${off_x}" ] && [ "${X}" -lt "$(( off_x + res_x ))" ] && \
-           [ "${Y}" -ge "${off_y}" ] && [ "${Y}" -lt "$(( off_y + res_y ))" ];
+        local x_right=$(( x_left + width ))
+        local y_bottom=$(( y_top + height ))
+
+        # Evaluates to mouse variables: X, Y, SCREEN, WINDOW
+        eval "$(xdotool getmouselocation --shell)"
+
+        if (( X > x_left && X < x_right )) && (( Y > y_top && Y < y_bottom ))
         then
-            _PROPERTIES[name]="${monitor_names_array[monitor_index]}"
-            _PROPERTIES[resolution]="${res_x}x${res_y}"
-
-            _PROPERTIES[width]="${res_x}"
-            _PROPERTIES[height]="${res_y}"
-            _PROPERTIES[offset-x]="${off_x}"
-            _PROPERTIES[offset-y]="${off_y}"
+            _PROPERTIES[name]="${display_names[$display_index]}"
+            _PROPERTIES[resolution]="${width}x${height}"
+            _PROPERTIES[width]="$width"
+            _PROPERTIES[height]="$height"
+            _PROPERTIES[offset-x]="$x_left"
+            _PROPERTIES[offset-y]="$y_top"
+            _PROPERTIES[window-id]="$WINDOW"
             break
         fi
-
-        (( monitor_index++ ))
     done
 }
 
