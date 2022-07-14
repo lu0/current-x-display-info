@@ -27,7 +27,7 @@ build: clean
 prepublish: build
 	twine upload -r testpypi dist/*
 	make clean && . venv_test/bin/activate
-	pip install -i https://test.pypi.org/simple/ --no-deps xdisplayinfo
+	pip3 install -i https://test.pypi.org/simple/ --no-deps xdisplayinfo
 	xdisplayinfo --all
 
 publish:
