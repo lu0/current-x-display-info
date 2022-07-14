@@ -1,3 +1,12 @@
+# v2.0.1 - 2022-07-14
+
+## Fixes
+- Prevent premature errors - if any - if invalid options are passed (617cbf0).
+- Exit on error instead of printing property descriptions (bb96c57).
+
+## Miscellaneous
+- Make usage section more readable in codebase (2c1f3fa).
+
 # v2.0.0 - 2022-07-12
 
 ## Fixes
