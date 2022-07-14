@@ -5,6 +5,8 @@
 #
 # https://github.com/lu0/current-x-display-info
 
+set -euo pipefail
+
 declare -A _PROPERTIES=(
     ["name"]="Name of the current display"
     ["resolution"]="Resolution as [width]x[height]"
@@ -92,24 +94,18 @@ xdisplayinfo::_reload_properties() {
 }
 
 xdisplayinfo::__parse_cli_options() {
-    local options; options=$(echo "${!_PROPERTIES[@]}" | tr -s " " "|")
     while getopts h-: OPT; do
-        local long_option="${OPT##-}${OPTARG}"
-        eval "
-        case $long_option in
-            $options)
-                xdisplayinfo::_reload_properties
-                xdisplayinfo::__show_property \$long_option
-                ;;
-            all)
-                xdisplayinfo::_reload_properties
-                xdisplayinfo::__show_all
-                ;;
-            *)
-                xdisplayinfo::__show_usage_and_exit
-                ;;
-        esac
-        " && return 0
+        local long_option="${OPT##-}${OPTARG:-}"
+
+        if [ "$long_option" == "all" ]; then
+            xdisplayinfo::_reload_properties
+            xdisplayinfo::__show_all
+            return 0
+        elif [ -v "_PROPERTIES[$long_option]" ]; then
+            xdisplayinfo::_reload_properties
+            xdisplayinfo::__show_property "$long_option"
+            return 0
+        fi
     done
     xdisplayinfo::__show_usage_and_exit
 }

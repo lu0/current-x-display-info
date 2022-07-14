@@ -8,7 +8,7 @@ mouse is hovered over, in systems using X server.
 Tested with the following dependencies, installed by default in most Linux
 distributions using X:
 
-- `bash`: `4`+
+- `bash`: `4.3`+
 - `xdotool`: `3.20160805`+
 - `xrandr`: `1.5.0`+
 - `grep`: `3.4`+
