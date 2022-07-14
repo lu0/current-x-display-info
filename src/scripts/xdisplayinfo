@@ -27,18 +27,18 @@ xdisplayinfo::__show_all() {
     done
 }
 
-_USAGE_WITH_PROPERTIES_AS_OPTIONS="
-Get information of the current display on systems using X.
-\nUSAGE:
-  xdisplayinfo   [OPTION]
-\nOPTIONS:
-$( echo -e "$(xdisplayinfo::__show_all)\nall: All properties" \
-    | column -ts ':' | sed 's/^/  --/ ; s/$/./' )
-"
-readonly _USAGE_WITH_PROPERTIES_AS_OPTIONS
+_OPTIONS="$(xdisplayinfo::__show_all)\nall: All properties"; readonly _OPTIONS
 
 xdisplayinfo::__show_usage_and_exit() {
-    echo -e "$_USAGE_WITH_PROPERTIES_AS_OPTIONS"
+    cat <<- EOF
+		Get information of the current display on systems using X.
+
+		USAGE:
+		  xdisplayinfo   [OPTION]
+
+		OPTIONS:
+		$(echo -e "${_OPTIONS}" | column -ts ':' | sed 's/^/  --/ ; s/$/./')
+	EOF
     exit 1
 }
 
