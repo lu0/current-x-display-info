@@ -98,9 +98,11 @@ xdisplayinfo::__parse_cli_options() {
         eval "
         case $long_option in
             $options)
+                xdisplayinfo::_reload_properties
                 xdisplayinfo::__show_property \$long_option
                 ;;
             all)
+                xdisplayinfo::_reload_properties
                 xdisplayinfo::__show_all
                 ;;
             *)
@@ -113,6 +115,5 @@ xdisplayinfo::__parse_cli_options() {
 }
 
 if [[ "${#BASH_SOURCE[@]}" -eq 1 ]]; then
-    xdisplayinfo::_reload_properties
     xdisplayinfo::__parse_cli_options "$@"
 fi
